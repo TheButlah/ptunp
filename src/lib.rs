@@ -1,15 +1,11 @@
-use std::time::Duration;
-
 use bytes::Bytes;
 use color_eyre::{Result, eyre::Context};
-use futures::{Sink, SinkExt, Stream, StreamExt, TryStream, TryStreamExt};
-use tokio::{io::AsyncReadExt as _, task::JoinHandle};
+use futures::{Sink, SinkExt, StreamExt, TryStream};
 use tokio_util::sync::CancellationToken;
 use tracing::debug;
-use tun::AsyncDevice;
 
 pub struct PTunP {
-    cancel: CancellationToken,
+    _cancel: CancellationToken,
     task_handle: tokio::task::JoinHandle<Result<()>>,
 }
 
@@ -40,7 +36,7 @@ impl PTunP {
         let task_handle = tokio::task::spawn(task(cancel.child_token(), framed));
 
         Ok(Self {
-            cancel,
+            _cancel: cancel,
             task_handle,
         })
     }

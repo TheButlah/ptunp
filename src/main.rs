@@ -1,7 +1,7 @@
 use clap::Parser;
 use color_eyre::Result;
 use tokio_util::sync::CancellationToken;
-use tracing::{debug, info};
+use tracing::info;
 
 #[derive(Debug, Parser)]
 #[clap(about, version)]
