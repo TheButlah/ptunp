@@ -21,8 +21,12 @@ async fn main() -> Result<()> {
     tokio::task::spawn(async move {
         let _cancel_guard = ctrlc_cancel.drop_guard();
         let _ = tokio::signal::ctrl_c().await;
+        info!("ctrl-c detected, shutting down");
     });
-    let ptunp = ptunp::PTunP::spawn(cancel.child_token())?;
+    let ptunp = ptunp::PTunP::builder()
+        .with_cancel(cancel.child_token())
+        .build()
+        .await?;
 
     ptunp.join().await
 }

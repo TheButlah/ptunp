@@ -12,6 +12,7 @@ clap = { version = "4.5.39", features = ["derive"] }
 color-eyre = "0.6.5"
 flume = "0.11.1"
 futures = "0.3.31"
+iroh = "0.35.0"
 tokio = { version = "1.45.1", features = ["full"] }
 tokio-util = "0.7.15"
 tracing = "0.1.41"
