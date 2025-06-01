@@ -1,5 +1,5 @@
 use bytes::Bytes;
-use color_eyre::{Result, eyre::Context};
+use color_eyre::{Result, Section, eyre::Context};
 use futures::{Sink, SinkExt, StreamExt, TryStream};
 use tokio_util::sync::CancellationToken;
 use tracing::debug;
@@ -24,7 +24,9 @@ impl PTunP {
             config.ensure_root_privileges(true);
         });
 
-        let device = tun::create_as_async(&config)?;
+        let device = tun::create_as_async(&config)
+            .wrap_err("failed to create tun network device")
+            .with_suggestion(|| "try running as root on linux")?;
         let framed = device
             .into_framed()
             .map(|vec| vec.map(Bytes::from))
