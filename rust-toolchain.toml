@@ -1,0 +1,5 @@
+[toolchain]
+channel = "1.87.0" # See workspace Cargo.toml
+components = ["rust-src", "rust-analyzer"]
+profile = "default"
+targets = ["x86_64-pc-windows-gnu", "x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu", "aarch64-apple-darwin"]
