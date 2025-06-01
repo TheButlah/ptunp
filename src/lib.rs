@@ -5,6 +5,7 @@ use color_eyre::{Result, eyre::Context};
 use futures::{Sink, SinkExt, Stream, StreamExt, TryStream, TryStreamExt};
 use tokio::{io::AsyncReadExt as _, task::JoinHandle};
 use tokio_util::sync::CancellationToken;
+use tracing::debug;
 use tun::AsyncDevice;
 
 pub struct PTunP {
@@ -13,9 +14,7 @@ pub struct PTunP {
 }
 
 impl PTunP {
-    pub fn spawn() -> Result<Self> {
-        let cancel = CancellationToken::new();
-
+    pub fn spawn(cancel: CancellationToken) -> Result<Self> {
         let mut config = tun::Configuration::default();
         config
             .address((10, 0, 0, 9))
@@ -53,8 +52,17 @@ impl PTunP {
 
 async fn task(
     cancel: CancellationToken,
-    tun_device: impl TryStream<Ok = Bytes> + Sink<Bytes>,
+    _tun_device: impl TryStream<Ok = Bytes> + Sink<Bytes>,
 ) -> Result<()> {
-    tokio::time::sleep(Duration::from_secs(10)).await;
+    debug!("starting task");
+    let pending_fut = std::future::pending();
+    let cancel_fut = cancel.cancelled();
+    tokio::select! {
+        _ = pending_fut => unreachable!(),
+        _ = cancel_fut => {
+            debug!("ctrlc detected, cancelling task");
+        },
+    }
+
     Ok(())
 }
