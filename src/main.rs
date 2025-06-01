@@ -13,7 +13,7 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
     let _args = Args::parse();
 
-    info!("starting");
+    info!("starting server");
 
     let cancel = CancellationToken::new();
 
@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
         let _ = tokio::signal::ctrl_c().await;
         info!("ctrl-c detected, shutting down");
     });
-    let ptunp = ptunp::PTunP::builder()
+    let ptunp = ptunp::Server::builder()
         .with_cancel(cancel.child_token())
         .build()
         .await?;
